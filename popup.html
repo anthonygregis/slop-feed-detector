@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      width: 320px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      color: #1a1a1a;
+      background: #fff;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .header p {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .content {
+      padding: 16px;
+    }
+
+    .section {
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+    }
+
+    .toggle-label {
+      font-weight: 500;
+    }
+
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.2s;
+      border-radius: 24px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.2s;
+      border-radius: 50%;
+    }
+
+    .toggle input:checked + .toggle-slider {
+      background-color: #667eea;
+    }
+
+    .toggle input:checked + .toggle-slider:before {
+      transform: translateX(20px);
+    }
+
+    .input-group {
+      margin-bottom: 12px;
+    }
+
+    .input-group label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .input-group .hint {
+      font-size: 11px;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #5a6fd6;
+    }
+
+    .btn-primary:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .status {
+      text-align: center;
+      padding: 8px;
+      margin-top: 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      display: none;
+    }
+
+    .status.success {
+      display: block;
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status.error {
+      display: block;
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .stat-card {
+      background: #f5f5f5;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .stat-card.wide {
+      grid-column: span 2;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: #666;
+      margin-top: 2px;
+    }
+
+    .stat-card.low .stat-value { color: #22c55e; }
+    .stat-card.medium .stat-value { color: #eab308; }
+    .stat-card.high .stat-value { color: #f97316; }
+    .stat-card.certain .stat-value { color: #ef4444; }
+
+    .footer {
+      padding: 12px 16px;
+      border-top: 1px solid #eee;
+      text-align: center;
+      font-size: 11px;
+      color: #888;
+    }
+
+    .footer a {
+      color: #667eea;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>AI Slop Detector</h1>
+    <p>Detect AI-generated content in your feed</p>
+  </div>
+
+  <div class="content">
+    <div class="section">
+      <div class="toggle-row">
+        <span class="toggle-label">Enable Detection</span>
+        <label class="toggle">
+          <input type="checkbox" id="enabled" checked>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">API Configuration</div>
+      <div class="input-group">
+        <label for="apiKey">OpenAI API Key</label>
+        <input type="password" id="apiKey" placeholder="sk-...">
+        <div class="hint">Your key is stored locally and never shared</div>
+      </div>
+      <button class="btn btn-primary" id="saveBtn">Save Settings</button>
+      <div class="status" id="status"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Statistics</div>
+      <div class="stats">
+        <div class="stat-card wide">
+          <div class="stat-value" id="totalAnalyzed">0</div>
+          <div class="stat-label">Posts Analyzed</div>
+        </div>
+        <div class="stat-card low">
+          <div class="stat-value" id="lowCount">0</div>
+          <div class="stat-label">Low</div>
+        </div>
+        <div class="stat-card medium">
+          <div class="stat-value" id="mediumCount">0</div>
+          <div class="stat-label">Medium</div>
+        </div>
+        <div class="stat-card high">
+          <div class="stat-value" id="highCount">0</div>
+          <div class="stat-label">High</div>
+        </div>
+        <div class="stat-card certain">
+          <div class="stat-value" id="certainCount">0</div>
+          <div class="stat-label">Certain</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Powered by <a href="https://openai.com" target="_blank">OpenAI</a>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
